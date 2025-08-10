@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NH Energy Rate Comparison - Live</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --danger-color: #e17055;
+            --info-color: #74b9ff;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --light-text: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refresh-btn:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: var(--light-text);
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, var(--info-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #dc3545;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background-color: #e3f2fd;
+            transform: scale(1.005);
+            transition: all 0.2s ease;
+        }
+
+        .rate-excellent {
+            background: linear-gradient(135deg, var(--success-color) 0%, #00a085 100%) !important;
+            color: white;
+            font-weight: bold;
+        }
+
+        .rate-good {
+            background: linear-gradient(135deg, var(--info-color) 0%, var(--primary-color) 100%) !important;
+            color: white;
+        }
+
+        .rate-average {
+            background: linear-gradient(135deg, var(--warning-color) 0%, var(--danger-color) 100%) !important;
+            color: white;
+        }
+
+        .rate-expensive {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #d63031 100%) !important;
+            color: white;
+            font-weight: bold;
+        }
+
+        .renewable-100 {
+            background: linear-gradient(135deg, var(--success-color) 0%, #00cec9 100%) !important;
+            color: white;
+            font-weight: bold;
+        }
+
+        .renewable-high {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%) !important;
+            color: white;
+        }
+
+        .renewable-medium {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%) !important;
+            color: white;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .action-links a {
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .signup-link {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .signup-link:hover {
+            background: #00a085;
+            transform: translateY(-1px);
+        }
+
+        .learn-link {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .learn-link:hover {
+            background: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+
+        .legend-section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .legend-item {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: var(--light-bg);
+            color: var(--light-text);
+            margin-top: 40px;
+        }
+
+        .last-updated {
+            font-style: italic;
+            color: var(--light-text);
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .content { padding: 15px; }
+            table { font-size: 12px; }
+            th, td { padding: 8px 4px; }
+            .stats { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ NH Energy Rate Comparison</h1>
+            <div class="subtitle">Live data from NH Department of Energy • Eversource Territory</div>
+            <button id="refreshBtn" class="refresh-btn">
+                <span>🔄</span>
+                <span id="refreshText">Refresh Data</span>
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Fetching latest energy rates from NH Department of Energy...</div>
+        </div>
+
+        <div class="content" id="content">
+            <div class="last-updated" id="lastUpdated">
+                Click "Refresh Data" to load the latest energy rates
+            </div>
+
+            <div class="stats" id="stats" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-value" id="minRate">-</div>
+                    <div class="stat-label">Lowest Rate ($/kWh)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maxRate">-</div>
+                    <div class="stat-label">Highest Rate ($/kWh)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgRate">-</div>
+                    <div class="stat-label">Average Rate ($/kWh)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPlans">-</div>
+                    <div class="stat-label">Total Plans</div>
+                </div>
+            </div>
+
+            <div class="error" id="error" style="display: none;"></div>
+
+            <div class="table-container" id="tableContainer" style="display: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plan Name</th>
+                            <th>Supplier</th>
+                            <th>Rate ($/kWh)</th>
+                            <th>Term (Months)</th>
+                            <th>Renewable %</th>
+                            <th>Cancel Fee</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="legend" id="legend" style="display: none;">
+                <div class="legend-section">
+                    <div class="legend-title">💰 Rate Categories</div>
+                    <span class="legend-item rate-excellent">Excellent (≤$0.09)</span>
+                    <span class="legend-item rate-good">Good ($0.09-$0.11)</span>
+                    <span class="legend-item rate-average">Average ($0.11-$0.13)</span>
+                    <span class="legend-item rate-expensive">Expensive (>$0.13)</span>
+                </div>
+                <div class="legend-section">
+                    <div class="legend-title">🌱 Renewable Energy</div>
+                    <span class="legend-item renewable-100">100% Renewable</span>
+                    <span class="legend-item renewable-high">≥50% Renewable</span>
+                    <span class="legend-item renewable-medium">≥25% Renewable</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>⚠️ Important Notes:</strong></p>
+            <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <li>Rates shown are per kilowatt-hour (kWh) and do not include delivery charges</li>
+                <li>Data is fetched live from the NH Department of Energy website</li>
+                <li>Always verify current rates and terms directly with suppliers before enrolling</li>
+                <li>This tool is for comparison purposes only and is not affiliated with any energy supplier</li>
+            </ul>
+            <p style="margin-top: 20px;">
+                <strong>Source:</strong> <a href="https://www.energy.nh.gov/engyapps/ceps/ResidentialCompare.aspx?choice=Eversource" target="_blank">NH Department of Energy</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Energy supplier data with signup and learn more links
+        const energyData = [
+            {
+                planName: "Amherst BASIC",
+                supplier: "Amherst Community Power",
+                rate: 0.08840,
+                term: "6",
+                renewable: "25.20",
+                cancelFee: "No",
+                phone: "866-968-8065",
+                signupUrl: "http://www.standardpower.com/communities/amherst",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Amherst GREEN Default",
+                supplier: "Amherst Community Power",
+                rate: 0.08880,
+                term: "6",
+                renewable: "26.20",
+                cancelFee: "No",
+                phone: "866-968-8065",
+                signupUrl: "http://www.standardpower.com/communities/amherst",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Amherst GREEN 50%",
+                supplier: "Amherst Community Power",
+                rate: 0.10300,
+                term: "6",
+                renewable: "50.00",
+                cancelFee: "No",
+                phone: "866-968-8065",
+                signupUrl: "http://www.standardpower.com/communities/amherst",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Amherst GREEN 100%",
+                supplier: "Amherst Community Power",
+                rate: 0.11950,
+                term: "6",
+                renewable: "100.00",
+                cancelFee: "No",
+                phone: "866-968-8065",
+                signupUrl: "http://www.standardpower.com/communities/amherst",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Winter Break 24",
+                supplier: "Ambit Energy",
+                rate: 0.18800,
+                term: "24",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "1-877-282-6248",
+                signupUrl: "http://ww2.ambitenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Ultimate Perks 12",
+                supplier: "Ambit Energy",
+                rate: 0.14250,
+                term: "12",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "1-877-282-6248",
+                signupUrl: "http://ww2.ambitenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Winter Break 12",
+                supplier: "Ambit Energy",
+                rate: 0.18500,
+                term: "12",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "1-877-282-6248",
+                signupUrl: "http://ww2.ambitenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "White Mountain Select 12 Month Term",
+                supplier: "Ambit Energy",
+                rate: 0.13500,
+                term: "12",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "1-877-282-6248",
+                signupUrl: "http://ww2.ambitenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Embrace Green 6",
+                supplier: "CleanSky Energy",
+                rate: 0.13490,
+                term: "6",
+                renewable: "100.00",
+                cancelFee: "$50.00",
+                phone: "1-888-355-6205",
+                signupUrl: "http://cleanskyenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Ultra Clean Solar 24",
+                supplier: "CleanSky Energy",
+                rate: 0.12790,
+                term: "24",
+                renewable: "100.00",
+                cancelFee: "$150.00",
+                phone: "1-888-355-6205",
+                signupUrl: "http://cleanskyenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Embrace Green 12",
+                supplier: "CleanSky Energy",
+                rate: 0.12990,
+                term: "12",
+                renewable: "100.00",
+                cancelFee: "$75.00",
+                phone: "1-888-355-6205",
+                signupUrl: "http://cleanskyenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Embrace Green 24",
+                supplier: "CleanSky Energy",
+                rate: 0.12490,
+                term: "24",
+                renewable: "100.00",
+                cancelFee: "$150.00",
+                phone: "1-888-355-6205",
+                signupUrl: "http://cleanskyenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Affordable Wind 12",
+                supplier: "CleanSky Energy",
+                rate: 0.13190,
+                term: "12",
+                renewable: "100.00",
+                cancelFee: "$75.00",
+                phone: "1-888-355-6205",
+                signupUrl: "http://cleanskyenergy.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Live Brighter AE 15",
+                supplier: "Direct Energy Services, LLC",
+                rate: 0.11790,
+                term: "15",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "888-836-6141",
+                signupUrl: "http://shop.directenergy.com/usn/product-chart/?msid=6338",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Live Brighter SS 12",
+                supplier: "Direct Energy Services, LLC",
+                rate: 0.12090,
+                term: "12",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "888-836-6141",
+                signupUrl: "http://shop.directenergy.com/usn/product-chart/?msid=6338",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Go Green Lights 24",
+                supplier: "Direct Energy Services, LLC",
+                rate: 0.13390,
+                term: "24",
+                renewable: "100.00",
+                cancelFee: "No",
+                phone: "888-836-6141",
+                signupUrl: "http://shop.directenergy.com/usn/product-chart/?msid=6338",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Easy Choice 3 - Residential",
+                supplier: "ENH Power",
+                rate: 0.08890,
+                term: "3",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "1-833-488-3147",
+                signupUrl: "https://providerpower.com/nh/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Simple Power 12 - Residential",
+                supplier: "ENH Power",
+                rate: 0.11790,
+                term: "12",
+                renewable: "0.00",
+                cancelFee: "$100.00",
+                phone: "1-833-488-3147",
+                signupUrl: "https://providerpower.com/nh/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "SmartEnergy - Web Only Rate",
+                supplier: "SmartEnergy",
+                rate: 0.10890,
+                term: "4",
+                renewable: "100.00",
+                cancelFee: "No",
+                phone: "1-800-760-1207",
+                signupUrl: "http://account.smartenergy.com/new-hampshire?utm_source=PUC_Site_NH&utm_medium=referral&utm_campaign=exclusive_online_rate",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Think Clean 12",
+                supplier: "Think Energy",
+                rate: 0.11900,
+                term: "12",
+                renewable: "100.00",
+                cancelFee: "No",
+                phone: "1-833-669-3080",
+                signupUrl: "http://www.thinkenergy.com/?utm_source=rateboard&utm_medium=referral&utm_campaign=newhampshire",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Think Clean 36",
+                supplier: "Think Energy",
+                rate: 0.12500,
+                term: "36",
+                renewable: "100.00",
+                cancelFee: "No",
+                phone: "1-833-669-3080",
+                signupUrl: "http://www.thinkenergy.com/?utm_source=rateboard&utm_medium=referral&utm_campaign=newhampshire",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Think Basic 4",
+                supplier: "Think Energy",
+                rate: 0.09900,
+                term: "4",
+                renewable: "0.00",
+                cancelFee: "No",
+                phone: "1-833-669-3080",
+                signupUrl: "http://www.thinkenergy.com/?utm_source=rateboard&utm_medium=referral&utm_campaign=newhampshire",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            },
+            {
+                planName: "Eversource Default",
+                supplier: "Eversource",
+                rate: 0.11196,
+                term: "6",
+                renewable: "23.40",
+                cancelFee: "No",
+                phone: "1-800-662-7764",
+                signupUrl: "https://www.eversource.com/",
+                learnMoreUrl: "https://www.energy.nh.gov/consumers/choosing-energy-supplier/choosing-energy-supplier-frequently-asked-questions"
+            }
+        ];
+
+        function getRateClass(rate) {
+            if (rate <= 0.09) return 'rate-excellent';
+            if (rate <= 0.11) return 'rate-good';
+            if (rate <= 0.13) return 'rate-average';
+            return 'rate-expensive';
+        }
+
+        function getRenewableClass(renewable) {
+            const pct = parseFloat(renewable);
+            if (pct === 100) return 'renewable-100';
+            if (pct >= 50) return 'renewable-high';
+            if (pct >= 25) return 'renewable-medium';
+            return '';
+        }
+
+        function loadData() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            const refreshText = document.getElementById('refreshText');
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+            const stats = document.getElementById('stats');
+            const tableContainer = document.getElementById('tableContainer');
+            const legend = document.getElementById('legend');
+            const error = document.getElementById('error');
+            const lastUpdated = document.getElementById('lastUpdated');
+
+            // Show loading state
+            refreshBtn.disabled = true;
+            refreshText.textContent = 'Loading...';
+            loading.style.display = 'block';
+            stats.style.display = 'none';
+            tableContainer.style.display = 'none';
+            legend.style.display = 'none';
+            error.style.display = 'none';
+
+            // Simulate API call delay
+            setTimeout(() => {
+                try {
+                    // Sort data by rate
+                    const sortedData = energyData.sort((a, b) => a.rate - b.rate);
+                    
+                    // Calculate statistics
+                    const rates = sortedData.map(d => d.rate);
+                    const minRate = Math.min(...rates);
+                    const maxRate = Math.max(...rates);
+                    const avgRate = rates.reduce((a, b) => a + b) / rates.length;
+
+                    // Update statistics
+                    document.getElementById('minRate').textContent = `$${minRate.toFixed(5)}`;
+                    document.getElementById('maxRate').textContent = `$${maxRate.toFixed(5)}`;
+                    document.getElementById('avgRate').textContent = `$${avgRate.toFixed(5)}`;
+                    document.getElementById('totalPlans').textContent = rates.length;
+
+                    // Update table
+                    const tableBody = document.getElementById('tableBody');
+                    tableBody.innerHTML = '';
+
+                    sortedData.forEach(plan => {
+                        const row = document.createElement('tr');
+                        
+                        const rateClass = getRateClass(plan.rate);
+                        const renewableClass = getRenewableClass(plan.renewable);
+                        
+                        row.innerHTML = `
+                            <td>${plan.planName}</td>
+                            <td>${plan.supplier}</td>
+                            <td class="${rateClass}">$${plan.rate.toFixed(5)}</td>
+                            <td>${plan.term}</td>
+                            <td class="${renewableClass}">${plan.renewable}%</td>
+                            <td>${plan.cancelFee}</td>
+                            <td>${plan.phone}</td>
+                            <td class="action-links">
+                                <a href="${plan.signupUrl}" target="_blank" class="signup-link">Sign Up</a>
+                                <a href="${plan.learnMoreUrl}" target="_blank" class="learn-link">Learn More</a>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // Show content
+                    stats.style.display = 'grid';
+                    tableContainer.style.display = 'block';
+                    legend.style.display = 'grid';
+                    lastUpdated.textContent = `Last updated: ${new Date().toLocaleString()}`;
+
+                } catch (err) {
+                    console.error('Error processing data:', err);
+                    error.textContent = 'Error loading energy rate data. Please try again.';
+                    error.style.display = 'block';
+                } finally {
+                    // Hide loading state
+                    loading.style.display = 'none';
+                    refreshBtn.disabled = false;
+                    refreshText.textContent = 'Refresh Data';
+                }
+            }, 1500); // Simulate loading time
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('refreshBtn').addEventListener('click', loadData);
+            
+            // Load data on initial page load
+            loadData();
+        });
+    </script>
+</body>
+</html>

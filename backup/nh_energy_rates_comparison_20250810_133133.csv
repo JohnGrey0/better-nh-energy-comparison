@@ -1,0 +1,93 @@
+Plan Name,Supplier,Rate ($/kWh),Term (Months),Renewable %,Cancel Fee,Phone
+Hillsborough BASIC,Hillsborough Community Power,$0.08810,7,25.20,No,866-968-8065
+Bennington BASIC,Bennington Community Power,$0.08820,6,25.20,No,866-968-8065
+Rollinsford BASIC,Rollinsford Community Power,$0.08840,7,25.20,No,866-968-8065
+Amherst BASIC,Amherst Community Power,$0.08840,6,25.20,No,866-968-8065
+Hillsborough GREEN Default,Hillsborough Community Power,$0.08850,7,26.20,No,866-968-8065
+Bennington GREEN Default,Bennington Community Power,$0.08860,6,26.20,No,866-968-8065
+Amherst GREEN Default,Amherst Community Power,$0.08880,6,26.20,No,866-968-8065
+Rollinsford GREEN Default,Rollinsford Community Power,$0.08880,7,26.20,No,866-968-8065
+Power Your Tomorrow Variable - 1,Town Square Energy,$0.08890,1,0.00,No,1-877-430-0093
+Easy Choice 3 - Residential,ENH Power,$0.08890,3,0.00,No,1-833-488-3147
+Standard,Hampton Community Power Aggregation,$0.09425,4,24.30,No,1-866-485-5858
+Power Your Today Fixed - 4,Town Square Energy,$0.09770,4,0.00,No,1-877-430-0093
+Power Your Tomorrow Variable - 1 Green,Town Square Energy,$0.09890,1,100.00,No,1-877-430-0093
+Think Basic 4,Think Energy,$0.09900,4,0.00,No,1-833-669-3080
+Hillsborough GREEN 50%,Hillsborough Community Power,$0.10270,7,50.00,No,866-968-8065
+Bennington GREEN 50%,Bennington Community Power,$0.10280,6,50.00,No,866-968-8065
+Rollinsford GREEN 50%,Rollinsford Community Power,$0.10300,7,50.00,No,866-968-8065
+Amherst GREEN 50%,Amherst Community Power,$0.10300,6,50.00,No,866-968-8065
+New Boston BASIC,New Boston Community Power,$0.10568,20,24.30,No,1-888-875-1711
+Milford DEFAULT,Milford Community Power,$0.10568,20,24.30,No,1-888-875-1711
+Jaffrey BASIC,Jaffrey Community Power,$0.10568,20,24.30,No,1-888-875-1711
+Optional Green 33,Hampton Community Power Aggregation,$0.10798,4,57.30,No,1-866-485-5858
+SmartEnergy - Web Only Rate,SmartEnergy,$0.10890,4,100.00,No,1-800-760-1207
+New Boston GREEN Default,New Boston Community Power,$0.10968,20,34.30,No,1-888-875-1711
+Milford PLUS 10%,Milford Community Power,$0.10968,20,34.30,No,1-888-875-1711
+Jaffrey GREEN Default,Jaffrey Community Power,$0.10968,20,34.30,No,1-888-875-1711
+Swanzey Basic,Swanzey Community Power,$0.11100,30,23.40,No,1-866-968-8065
+Marlborough Basic,Marlborough Community Power,$0.11100,30,23.40,No,1-866-968-8065
+Keene Basic,Keene Community Power,$0.11100,30,23.40,No,1-866-968-8065
+Wilton Basic,Wilton Community Power,$0.11100,30,23.40,No,1-866-968-8065
+Eversource Default,Eversource,$0.11196,6,23.40,No,1-800-662-7764
+Keene Local Green,Keene Community Power,$0.11470,30,33.40,No,1-866-968-8065
+Swanzey Standard,Swanzey Community Power,$0.11471,30,33.40,No,1-866-968-8065
+Wilton Standard,Wilton Community Power,$0.11471,30,33.40,No,1-866-968-8065
+Marlborough Standard,Marlborough Community Power,$0.11471,30,33.40,No,1-866-968-8065
+New Boston GREEN 50%,New Boston Community Power,$0.11648,20,50.00,No,1-888-875-1711
+Milford GREEN 50%,Milford Community Power,$0.11648,20,50.00,No,1-888-875-1711
+Jaffrey GREEN 50%,Jaffrey Community Power,$0.11648,20,50.00,No,1-888-875-1711
+Live Brighter TO 15,"Direct Energy Services, LLC",$0.11690,15,0.00,No,888-836-6141
+Power Your Tomorrow Fixed - 12,Town Square Energy,$0.11770,12,0.00,No,1-877-430-0093
+Simple Power 12 - Residential,ENH Power,$0.11790,12,0.00,$100.00,1-833-488-3147
+Live Brighter AE 15,"Direct Energy Services, LLC",$0.11790,15,0.00,No,888-836-6141
+Power Your Tomorrow Fixed - 18,Town Square Energy,$0.11870,18,0.00,No,1-877-430-0093
+Think Clean 12,Think Energy,$0.11900,12,100.00,No,1-833-669-3080
+Hillsborough GREEN 100%,Hillsborough Community Power,$0.11920,7,100.00,No,866-968-8065
+Bennington GREEN 100%,Bennington Community Power,$0.11930,6,100.00,No,866-968-8065
+Rollinsford GREEN 100%,Rollinsford Community Power,$0.11950,7,100.00,No,866-968-8065
+Amherst GREEN 100%,Amherst Community Power,$0.11950,6,100.00,No,866-968-8065
+Power Your Tomorrow Fixed - 4,Town Square Energy,$0.12000,4,0.00,$50.00,1-877-430-0093
+Keene 50% Local Green,Keene Community Power,$0.12050,30,50.00,No,1-866-968-8065
+Wilton 50,Wilton Community Power,$0.12050,30,50.00,No,1-866-968-8065
+Marlborough 50,Marlborough Community Power,$0.12050,30,50.00,No,1-866-968-8065
+Swanzey 50,Swanzey Community Power,$0.12050,30,50.00,No,1-866-968-8065
+Live Brighter SS 12,"Direct Energy Services, LLC",$0.12090,12,0.00,No,888-836-6141
+Live Brighter 15,"Direct Energy Services, LLC",$0.12290,15,0.00,No,888-836-6141
+Embrace Green 24,CleanSky Energy,$0.12490,24,100.00,$150.00,1-888-355-6205
+Think Clean 36,Think Energy,$0.12500,36,100.00,No,1-833-669-3080
+Live Brighter AE 12,"Direct Energy Services, LLC",$0.12690,12,0.00,No,888-836-6141
+Ultra Clean Solar 24,CleanSky Energy,$0.12790,24,100.00,$150.00,1-888-355-6205
+12 Month Standard Fixed,"North American Power & Gas, LLC",$0.12790,12,0.00,$10.00,877-572-9965
+Live Brighter 24,"Direct Energy Services, LLC",$0.12890,24,0.00,No,888-836-6141
+Optional Green 100,Hampton Community Power Aggregation,$0.12918,4,100.00,No,1-866-485-5858
+Embrace Green 12,CleanSky Energy,$0.12990,12,100.00,$75.00,1-888-355-6205
+14 Month Standard Fixed,"North American Power & Gas, LLC",$0.12990,14,0.00,$10.00,877-572-9965
+SureLock 12 - Residential,"XOOM Energy New Hampshire, LLC",$0.13090,12,0.00,$110.00,1-888-997-8979
+SureLock 24,"XOOM Energy New Hampshire, LLC",$0.13190,24,0.00,$200.00,1-888-997-8979
+Affordable Wind 12,CleanSky Energy,$0.13190,12,100.00,$75.00,1-888-355-6205
+SimpleClean12 - Residential,"XOOM Energy New Hampshire, LLC",$0.13290,12,50.00,$110.00,1-888-997-8979
+Go Green Lights 24,"Direct Energy Services, LLC",$0.13390,24,100.00,No,888-836-6141
+Granite Basic - Residential,Community Power Coalition of NH,$0.13419,6,25.20,No,1-866-603-7697
+Embrace Green 6,CleanSky Energy,$0.13490,6,100.00,$50.00,1-888-355-6205
+White Mountain Select 12 Month Term,Ambit Energy,$0.13500,12,0.00,No,1-877-282-6248
+Enfield Local - Residential,Community Power Coalition of NH,$0.13619,6,25.20,No,1-866-603-7697
+Canterbury Basic - Residential,Community Power Coalition of NH,$0.13619,6,25.20,No,1-866-603-7697
+New Boston GREEN 100%,New Boston Community Power,$0.13648,20,100.00,No,1-888-875-1711
+Milford GREEN 100%,Milford Community Power,$0.13648,20,100.00,No,1-888-875-1711
+Jaffrey GREEN 100%,Jaffrey Community Power,$0.13648,20,100.00,No,1-888-875-1711
+RescueLock 12,"XOOM Energy New Hampshire, LLC",$0.13790,12,0.00,$110.00,1-888-997-8979
+Keene 100% Local Green,Keene Community Power,$0.13900,30,100.00,No,1-866-968-8065
+Marlborough 100,Marlborough Community Power,$0.13900,30,100.00,No,1-866-968-8065
+Wilton 100,Wilton Community Power,$0.13900,30,100.00,No,1-866-968-8065
+Swanzey 100,Swanzey Community Power,$0.13900,30,100.00,No,1-866-968-8065
+14 Month Renewable Fixed,"North American Power & Gas, LLC",$0.13940,14,100.00,$10.00,877-572-9965
+Peterborough Local - Residential,Community Power Coalition of NH,$0.13995,6,25.20,No,1-866-603-7697
+Granite Plus - Residential,Community Power Coalition of NH,$0.14119,6,33.00,No,1-866-603-7697
+Ultimate Perks 12,Ambit Energy,$0.14250,12,0.00,No,1-877-282-6248
+Power Your Tomorrow - 4 Green,Town Square Energy,$0.14740,4,100.00,$50.00,1-877-430-0093
+Clean 50 - Residential,Community Power Coalition of NH,$0.14819,6,50.00,No,1-866-603-7697
+SimpleClean,"XOOM Energy New Hampshire, LLC",$0.16490,1,50.00,No,1-888-997-8979
+Clean 100 - Residential,Community Power Coalition of NH,$0.16819,6,100.00,No,1-866-603-7697
+Winter Break 12,Ambit Energy,$0.18500,12,0.00,No,1-877-282-6248
+Winter Break 24,Ambit Energy,$0.18800,24,0.00,No,1-877-282-6248

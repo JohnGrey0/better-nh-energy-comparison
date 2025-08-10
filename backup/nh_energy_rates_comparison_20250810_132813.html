@@ -1,0 +1,167 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>NH Energy Rate Comparison - Eversource Territory</title>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 20px;
+                background-color: #f8f9fa;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                border-bottom: 3px solid #3498db;
+                padding-bottom: 10px;
+            }
+            .stats {
+                background: #e8f4f8;
+                padding: 15px;
+                border-radius: 5px;
+                margin: 20px 0;
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            .stat-item {
+                text-align: center;
+                margin: 5px;
+            }
+            .stat-value {
+                font-size: 1.5em;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            .stat-label {
+                color: #7f8c8d;
+                font-size: 0.9em;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 20px;
+                font-size: 14px;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 12px 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #3498db;
+                color: white;
+                font-weight: bold;
+                position: sticky;
+                top: 0;
+            }
+            tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            tr:hover {
+                background-color: #e3f2fd;
+                cursor: pointer;
+            }
+            .rate-excellent {
+                background-color: #d4edda !important;
+                color: #155724;
+                font-weight: bold;
+            }
+            .rate-good {
+                background-color: #d1ecf1 !important;
+                color: #0c5460;
+            }
+            .rate-average {
+                background-color: #fff3cd !important;
+                color: #856404;
+            }
+            .rate-expensive {
+                background-color: #f8d7da !important;
+                color: #721c24;
+            }
+            .renewable-100 {
+                background-color: #28a745 !important;
+                color: white;
+                font-weight: bold;
+            }
+            .renewable-high {
+                background-color: #6f42c1 !important;
+                color: white;
+            }
+            .renewable-medium {
+                background-color: #fd7e14 !important;
+                color: white;
+            }
+            .footer {
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #ddd;
+                color: #6c757d;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🔌 New Hampshire Energy Rate Comparison</h1>
+            <p style="text-align: center; color: #6c757d; font-style: italic;">
+                Eversource Territory • Data extracted from NH Department of Energy
+            </p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">$0.18800</div>
+                    <div class="stat-label">Lowest Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">$0.18800</div>
+                    <div class="stat-label">Highest Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">$0.18800</div>
+                    <div class="stat-label">Average Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Total Plans</div>
+                </div>
+            </div>
+    
+<table>
+<tr><th>Plan Name</th><th>Supplier</th><th>Rate ($/kWh)</th><th>Term (Months)</th><th>Renewable %</th><th>Cancel Fee</th><th>Phone</th></tr>
+<tr><td>Winter Break 24</td><td>Ambit Energy</td><td class="rate-expensive">$0.18800</td><td>24</td><td class="">0.00%</td><td>No</td><td>1-877-282-6248</td></tr>
+
+        </table>
+        
+        <div class="footer">
+            <p><strong>Rate Color Guide:</strong></p>
+            <p>
+                <span style="background-color: #d4edda; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">Excellent (≤$0.09)</span>
+                <span style="background-color: #d1ecf1; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">Good ($0.09-$0.11)</span>
+                <span style="background-color: #fff3cd; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">Average ($0.11-$0.13)</span>
+                <span style="background-color: #f8d7da; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">Expensive (>$0.13)</span>
+            </p>
+            <p><strong>Renewable Energy Guide:</strong></p>
+            <p>
+                <span style="background-color: #28a745; color: white; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">100% Renewable</span>
+                <span style="background-color: #6f42c1; color: white; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">≥50% Renewable</span>
+                <span style="background-color: #fd7e14; color: white; padding: 3px 8px; border-radius: 3px; margin: 0 5px;">≥25% Renewable</span>
+            </p>
+            <p>Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
+            <p><strong>Source:</strong> <a href="https://www.energy.nh.gov/engyapps/ceps/ResidentialCompare.aspx?choice=Eversource">NH Department of Energy</a></p>
+            <p><em>Always verify rates and terms directly with suppliers before enrolling.</em></p>
+        </div>
+        </div>
+    </body>
+    </html>
+    
