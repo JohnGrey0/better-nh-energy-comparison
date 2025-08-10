@@ -738,7 +738,7 @@ def save_comparison_files(df):
                 html_content += f'<td>{value}</td>'
         html_content += "</tr>"
     
-    html_content += """
+    html_content += f"""
             </tbody>
         </table>
     </div>
@@ -776,9 +776,9 @@ def save_comparison_files(df):
         </div>
         
         <script>
-        let sortDirections = {};
+        let sortDirections = {{}};
         
-        function sortTable(columnIndex) {
+        function sortTable(columnIndex) {{
             const table = document.getElementById('energyTable');
             const tbody = table.querySelector('tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -789,56 +789,56 @@ def save_comparison_files(df):
             sortDirections[columnIndex] = newDirection;
             
             // Update header indicators
-            table.querySelectorAll('th').forEach((th, index) => {
+            table.querySelectorAll('th').forEach((th, index) => {{
                 const span = th.querySelector('span');
-                if (span) {
-                    if (index === columnIndex) {
+                if (span) {{
+                    if (index === columnIndex) {{
                         span.textContent = newDirection === 'asc' ? ' ↑' : ' ↓';
-                    } else {
+                    }} else {{
                         span.textContent = ' ↕️';
-                    }
-                }
-            });
+                    }}
+                }}
+            }});
             
             // Sort rows
-            rows.sort((a, b) => {
+            rows.sort((a, b) => {{
                 const aText = a.cells[columnIndex].textContent.trim();
                 const bText = b.cells[columnIndex].textContent.trim();
                 
                 // Handle different data types based on column
                 let aValue, bValue;
                 
-                if (columnIndex === 2) { // Rate ($/kWh) column
+                if (columnIndex === 2) {{ // Rate ($/kWh) column
                     // Extract numeric value from rate (remove $ and convert)
                     aValue = parseFloat(aText.replace(/[$,]/g, '')) || 0;
                     bValue = parseFloat(bText.replace(/[$,]/g, '')) || 0;
-                } else if (columnIndex === 3) { // Term (Months) column
+                }} else if (columnIndex === 3) {{ // Term (Months) column
                     // Convert to number
                     aValue = parseInt(aText) || 0;
                     bValue = parseInt(bText) || 0;
-                } else if (columnIndex === 4) { // Renewable % column
+                }} else if (columnIndex === 4) {{ // Renewable % column
                     // Extract percentage value
                     aValue = parseFloat(aText.replace(/%/g, '')) || 0;
                     bValue = parseFloat(bText.replace(/%/g, '')) || 0;
-                } else { // Text columns (Plan Name, Supplier, Cancel Fee, Phone, links)
+                }} else {{ // Text columns (Plan Name, Supplier, Cancel Fee, Phone, links)
                     aValue = aText.toLowerCase();
                     bValue = bText.toLowerCase();
-                }
+                }}
                 
-                if (typeof aValue === 'number') {
+                if (typeof aValue === 'number') {{
                     return newDirection === 'asc' ? aValue - bValue : bValue - aValue;
-                } else {
-                    if (newDirection === 'asc') {
+                }} else {{
+                    if (newDirection === 'asc') {{
                         return aValue.localeCompare(bValue);
-                    } else {
+                    }} else {{
                         return bValue.localeCompare(aValue);
-                    }
-                }
-            });
+                    }}
+                }}
+            }});
             
             // Re-append sorted rows
             rows.forEach(row => tbody.appendChild(row));
-        }
+        }}
         </script>
         </script>
     </body>
