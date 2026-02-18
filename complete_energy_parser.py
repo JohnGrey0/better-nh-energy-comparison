@@ -639,6 +639,7 @@ def save_comparison_files(df):
                 color: #2c3e50;
                 margin-bottom: 10px;
                 font-size: 1.1em;
+                text-align: center;
             }}
             .highlight-content {{
                 color: #5a6c7d;
@@ -735,6 +736,7 @@ def save_comparison_files(df):
                 background: #f8f9fa;
                 padding: 15px;
                 border-radius: 8px;
+                center-align: center;
             }}
             .legend-title {{
                 font-weight: bold;
@@ -819,8 +821,23 @@ def save_comparison_files(df):
                     <strong>{best_no_cancel['Rate ($/kWh)']}/kWh</strong> • {best_no_cancel['Term (Months)']} months
                 </div>
             </div>'''
-        
         html_content += '</div>'
+        html_content += """
+        <div class="legend">
+                <div class="legend-section">
+                    <div class="highlight-title">💰 Rate Categories</div>
+                    <span class="legend-item rate-excellent">Excellent (≤$0.09)</span>
+                    <span class="legend-item rate-good">Good ($0.09-$0.11)</span>
+                    <span class="legend-item rate-average">Average ($0.11-$0.13)</span>
+                    <span class="legend-item rate-expensive">Expensive (>$0.13)</span>
+                </div>
+                <div class="legend-section">
+                    <div class="highlight-title">🌱 Renewable Energy</div>
+                    <span class="legend-item renewable-100">100% Renewable</span>
+                    <span class="legend-item renewable-high">≥50% Renewable</span>
+                    <span class="legend-item renewable-medium">≥25% Renewable</span>
+                </div>
+            </div>"""
     
     # Generate table HTML with enhanced color coding and sortable functionality
     html_content += '''
@@ -878,21 +895,6 @@ def save_comparison_files(df):
         </table>
     </div>
     
-    <div class="legend">
-        <div class="legend-section">
-            <div class="legend-title">💰 Rate Categories</div>
-            <span class="legend-item rate-excellent">Excellent (≤$0.09)</span>
-            <span class="legend-item rate-good">Good ($0.09-$0.11)</span>
-            <span class="legend-item rate-average">Average ($0.11-$0.13)</span>
-            <span class="legend-item rate-expensive">Expensive (>$0.13)</span>
-        </div>
-        <div class="legend-section">
-            <div class="legend-title">🌱 Renewable Energy</div>
-            <span class="legend-item renewable-100">100% Renewable</span>
-            <span class="legend-item renewable-high">≥50% Renewable</span>
-            <span class="legend-item renewable-medium">≥25% Renewable</span>
-        </div>
-    </div>
     
     <div class="footer">
         <p><strong>⚠️ Important Notes:</strong></p>
