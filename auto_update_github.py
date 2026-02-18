@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Automated GitHub Update Script for NH Energy Rates
 This script generates fresh energy rate data and pushes it to GitHub automatically.
