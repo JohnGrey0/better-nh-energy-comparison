@@ -8,39 +8,174 @@ def parse_all_energy_data():
     """
     Parse all the energy rate data from the complete fetched content including actual signup links
     """
-    import requests
+    from playwright.sync_api import sync_playwright
     from bs4 import BeautifulSoup
+    import time
     
     try:
         # Fetch the live data from NH.gov
-        print("🌐 Fetching live data from NH Department of Energy...")
+        print("🌐 Fetching live data from NH Department of Energy using Playwright...")
         url = "https://www.energy.nh.gov/engyapps/ceps/ResidentialCompare.aspx?choice=Eversource"
         
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        }
+        with sync_playwright() as p:
+            # Launch browser - try Firefox as it often bypasses better
+            print("🚀 Launching Firefox browser...")
+            browser = p.firefox.launch(headless=True)
+            context = browser.new_context(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
+                viewport={"width": 1920, "height": 1080}
+            )
+            
+            page = context.new_page()
+            
+            print(f"📄 Navigating to {url}...")
+            page.goto(url, wait_until="networkidle")
+            
+            # Wait for any potential challenges or loading
+            time.sleep(5)
+            
+            content = page.content()
+            browser.close()
         
-        response = requests.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
+        soup = BeautifulSoup(content, 'html.parser')
         
-        soup = BeautifulSoup(response.content, 'html.parser')
+        # Find the main data table - try specific class first
+        # In the new format, there are multiple tables with this class, so finding one doesn't mean it's the "old big table"
+        # The old format had a single large table containing all rows
+        # The new format has many small tables, one per plan
         
-        # Find the main data table
-        tables = soup.find_all('table')
-        data_table = None
+        main_table = None
+        data_table = None # Initialize for compatibility
         
-        for table in tables:
-            # Look for the table with energy rate data
-            headers = table.find_all('th')
-            if len(headers) > 5:  # Energy rate tables typically have many columns
-                header_text = ' '.join([th.get_text().strip() for th in headers]).lower()
-                if any(keyword in header_text for keyword in ['plan', 'supplier', 'rate', 'term', 'renewable']):
-                    data_table = table
-                    break
+        # Check if it's the old single-table format
+        potential_table = soup.find('table', class_='tblcomparelist')
+        if potential_table:
+             # If it has many rows as direct children, it might be the old format
+             # In new format, each table has ~5-6 rows
+             rows = potential_table.find_all('tr')
+             if len(rows) > 10: 
+                 main_table = potential_table
+        
+        if not main_table:
+            # Fallback: Search all tables for a large data table
+            tables = soup.find_all('table')
+            
+            for table in tables:
+                # Look for the table with energy rate data
+                headers = table.find_all('th')
+                if len(headers) > 5:  # Energy rate tables typically have many columns
+                    header_text = ' '.join([th.get_text().strip() for th in headers]).lower()
+                    if any(keyword in header_text for keyword in ['plan', 'supplier', 'rate', 'term', 'renewable']):
+                        main_table = table
+                        break
         
         suppliers = []
         
-        if data_table:
+        if main_table:
+            print("✓ Found energy rate table (Old Format), parsing data...")
+            data_table = main_table
+        else:
+            # New Format Parsing
+            print("✓ Checking for new card-based format...")
+            # Each plan seems to be in its own table or tbody within a list
+            # We'll look for the plan name spans to identify entries
+            plan_name_elements = soup.find_all('span', class_='PlanName')
+            
+            if plan_name_elements:
+                print(f"✓ Found {len(plan_name_elements)} plans in new format")
+                
+                for plan_span in plan_name_elements:
+                    try:
+                        # logical parent container for this plan (tbody)
+                        # The span is inside a td, inside a tr, inside a tbody
+                        plan_tbody = plan_span.find_parent('tbody')
+                        if not plan_tbody:
+                            continue
+                            
+                        # Extract textual data using the structure provided
+                        
+                        # Plan Name
+                        plan_name = plan_span.get_text().strip()
+                        
+                        # Supplier Name (in the next row, class CompanyName)
+                        supplier_elem = plan_tbody.find('td', class_='CompanyName')
+                        supplier = supplier_elem.get_text().strip() if supplier_elem else "Unknown Supplier"
+                        if not supplier: # Fallback if text is inside b tag
+                             b_tag = supplier_elem.find('b') if supplier_elem else None
+                             supplier = b_tag.get_text().strip() if b_tag else "Unknown Supplier"
+                        # Clean up supplier name if it has "Pricing:" attached
+                        if "Pricing:" in supplier:
+                            supplier = supplier.split("Pricing:")[0].strip()
+
+                        # Rate (Per KWh: $0.18590) - look for span with id containing lblKWh
+                        rate_elem = plan_tbody.find('span', id=lambda x: x and 'lblKWh' in x)
+                        rate_text = rate_elem.get_text().strip() if rate_elem else "0"
+                        rate_value = float(re.sub(r'[^\d.]', '', rate_text)) if rate_text else 0.0
+
+                        # Term Length (Rate Good for: 24 months)
+                        term_elem = plan_tbody.find('td', class_='RateGoodFor')
+                        term_text = term_elem.get_text().strip() if term_elem else "0"
+                        # Extract the number of months
+                        term_match = re.search(r'(\d+)', term_text)
+                        term_months = term_match.group(1) if term_match else "0"
+
+                        # Renewable (Renewable Energy: 0.00 %)
+                        renewable_elem = plan_tbody.find('td', class_='RenewableEnergy')
+                        renewable_text = renewable_elem.get_text().strip() if renewable_elem else "0"
+                        # Extract the percentage number which might have decimals
+                        renewable_pct = re.search(r'(\d+(?:\.\d+)?)', renewable_text)
+                        renewable_pct = renewable_pct.group(1) if renewable_pct else "0"
+
+                        # Cancellation Fee (Cancellation Fee: No)
+                        cancel_elem = plan_tbody.find('td', class_='CancellationFee')
+                        cancel_text = cancel_elem.get_text().strip() if cancel_elem else "No"
+                        # Clean up "Cancellation Fee:" text label
+                        cancel_fee = cancel_text.replace('Cancellation Fee:', '').strip()
+
+                        # Phone
+                        phone_elem = plan_tbody.find('td', class_='PhoneNumber')
+                        phone = phone_elem.get_text().strip() if phone_elem else ""
+
+                        # Links
+                        signup_link = ""
+                        learn_more_link = ""
+                        
+                        links = plan_tbody.find_all('a', href=True)
+                        for link in links:
+                            href = link.get('href', '')
+                            link_text = link.get_text().strip().lower()
+                            
+                            if 'sign' in link_text:
+                                signup_link = href
+                            elif 'learn' in link_text:
+                                learn_more_link = href
+                        
+                        # Fallback links
+                        if not signup_link:
+                             signup_link = "https://www.energy.nh.gov/consumers/choosing-energy-supplier"
+                        if not learn_more_link:
+                             learn_more_link = signup_link
+
+                        suppliers.append({
+                            'plan_name': plan_name,
+                            'supplier': supplier,
+                            'rate_per_kwh': rate_value,
+                            'term_months': term_months,
+                            'renewable_energy_pct': renewable_pct,
+                            'cancellation_fee': cancel_fee,
+                            'phone': phone,
+                            'signup_link': f'<a href="{signup_link}" target="_blank">Sign up</a>',
+                            'learn_more_link': f'<a href="{learn_more_link}" target="_blank">Learn more</a>'
+                        })
+
+                    except Exception as e:
+                        print(f"⚠️Error parsing plan in new format: {e}")
+                        continue
+
+        if not suppliers and not data_table:
+             print("⚠️  Could not find energy plans in either format.")
+        
+        if data_table and not suppliers: # If we found the old table but haven't parsed it yet (the old logic)
             print("✓ Found energy rate table, parsing data...")
             rows = data_table.find_all('tr')[1:]  # Skip header row
             
@@ -161,7 +296,7 @@ def parse_all_energy_data():
             
             print(f"✓ Successfully parsed {len(suppliers)} energy plans from live data")
             
-        else:
+        elif not suppliers:
             print("⚠️  Could not find energy rate table, using fallback data...")
             # Fallback to hardcoded data with corrected links
             suppliers = get_fallback_data_with_real_links()
